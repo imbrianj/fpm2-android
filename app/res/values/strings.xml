@@ -39,7 +39,10 @@
     <string name="pref_default_action_launch">Launch as default</string>
     <string name="pref_default_action_launch_summary">Launch, instead of view, when an item is selected.</string>
 	<string name="pref_fpm_sd_location">Location of FPM2 Data</string>
-	<string name="pref_fpm_sd_location_summary">Location on your phone to watch for the FPM file.</string>
+	<string name="pref_fpm_sd_location_summary">Path or content URI for your FPM file. On modern Android, use "Pick FPM2 file" above.</string>
+	<string name="pref_pick_fpm_file">Pick FPM2 file</string>
+	<string name="pref_pick_fpm_file_summary">Choose your FPM file using Android system file picker.</string>
+	<string name="pref_pick_fpm_file_failed">Unable to open the file picker on this device.</string>
 	<string name="pref_internal_storage">Use Internal Storage</string>
 	<string name="pref_internal_storage_summary">Recommended to prevents other applications from accessing data.</string>
 

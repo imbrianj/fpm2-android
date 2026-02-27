@@ -21,6 +21,10 @@
 
 	<PreferenceCategory android:title="@string/fpm_file">
 
+		<Preference android:key="fpm_sd_picker"
+			android:title="@string/pref_pick_fpm_file"
+			android:summary="@string/pref_pick_fpm_file_summary" />
+
 		<EditTextPreference android:key="fpm_sd_location" 
 			android:summary="@string/pref_fpm_sd_location_summary"
 			android:title="@string/pref_fpm_sd_location" />

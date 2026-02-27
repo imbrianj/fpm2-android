@@ -41,7 +41,8 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.text.ClipboardManager;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
@@ -210,7 +211,7 @@ public class PasswordItemListActivity extends ListActivity implements FpmBroadca
 	protected void onNewIntent(Intent intent) {
 		super.onNewIntent(intent);
 		// if this acitity receives input from search widget, apply the search string a listView text filter
-		if (intent.getAction().equals(Intent.ACTION_SEARCH) && getFpmApplication().isCryptOpen()) {
+		if (Intent.ACTION_SEARCH.equals(intent.getAction()) && getFpmApplication().isCryptOpen()) {
 			String searchString = intent.getStringExtra(SearchManager.QUERY);
 			getListView().setFilterText(searchString);
 		}
@@ -310,7 +311,7 @@ public class PasswordItemListActivity extends ListActivity implements FpmBroadca
 					value = app.decrypt(value);
 				}
 				ClipboardManager clipboard = (ClipboardManager) activity.getSystemService(CLIPBOARD_SERVICE);
-				clipboard.setText(value);
+				clipboard.setPrimaryClip(ClipData.newPlainText(property, value));
 			} catch (Exception e) {
 				Log.w(TAG, "Failed to access property \"" + property + "\" of item id " + id + ".", e);
 			}

@@ -34,6 +34,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Locale;
 import java.security.GeneralSecurityException;
 import java.util.Collections;
 import java.util.List;
@@ -50,6 +51,7 @@ import org.xml.sax.SAXException;
 import android.app.Application;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.os.AsyncTask;
 import android.os.Environment;
@@ -139,13 +141,11 @@ public class FpmApplication extends Application implements OnSharedPreferenceCha
 
 	public boolean fpmFileExists()
 	{
-		boolean fileFound = true;
-		try {
-			fileLocator.open(getExternalStorageFpmFilePath());
+		try (InputStream ignored = fileLocator.open(getExternalStorageFpmFilePath())) {
+			return true;
 		} catch (IOException e) {
-			fileFound = false;
+			return false;
 		}
-		return fileFound;
 	}
 	
 	/**
@@ -290,12 +290,12 @@ public class FpmApplication extends Application implements OnSharedPreferenceCha
 	 * @return
 	 */
 	public PasswordItem getPasswordItemById(long id) {
-		List<PasswordItem> items = getPasswordItems();
-		if (id >= items.size()) {
-			return null;
-		} else {
-			return items.get((int) id);
+		for (PasswordItem item : getPasswordItems()) {
+			if (item.getId() == id) {
+				return item;
+			}
 		}
+		return null;
 	}
 
 	/**
@@ -396,6 +396,18 @@ public class FpmApplication extends Application implements OnSharedPreferenceCha
 	public class DefaultFpmFileLocator implements FpmFileLocator {
 		@Override
 		public InputStream open(String file) throws IOException {
+			if (file == null) {
+				throw new FileNotFoundException("No FPM file location configured.");
+			}
+
+			if (file.toLowerCase(Locale.US).startsWith("content://")) {
+				InputStream stream = FpmApplication.this.getContentResolver().openInputStream(Uri.parse(file));
+				if (stream == null) {
+					throw new FileNotFoundException("Unable to open content URI " + file);
+				}
+				return new BufferedInputStream(stream);
+			}
+
 			File externalFpmFile = new File(file);
 			boolean internalStorage = FpmApplication.this.isInternalStorageEnabled();
 			
